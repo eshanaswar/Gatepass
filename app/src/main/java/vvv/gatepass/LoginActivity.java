@@ -7,6 +7,7 @@ import android.app.LoaderManager.LoaderCallbacks;
 import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.Loader;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
@@ -25,6 +26,7 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -48,7 +50,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
      * TODO: remove after connecting to a real authentication system.
      */
     private static final String[] DUMMY_CREDENTIALS = new String[]{
-            "foo@st.niituniversity.in:hello", "bar@niituniversity.in.com:world"
+            "foo@st.niituniversity.in:hello", "bar@niituniversity.in:world"
     };
     /**
      * Keep track of the login task to ensure we can cancel it if requested.
@@ -69,8 +71,17 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         // Set up the login form.
         mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
         populateAutoComplete();
-
         mPasswordView = (EditText) findViewById(R.id.password);
+
+        if (savedInstanceState == null) {
+            SharedPreferences prefs = getSharedPreferences("MY_PREFS_NAME", MODE_PRIVATE);
+            String restoredEmail = prefs.getString("Email", "");
+            String restoredPassword = prefs.getString("Password", "");
+            mEmailView.setText(restoredEmail);
+            mPasswordView.setText(restoredPassword);
+        }
+
+
         mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
@@ -333,7 +344,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                     return pieces[1].equals(mPassword);
                 }
             }
-            return true;
+            return false;
         }
 
         @Override
@@ -346,6 +357,16 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                     user_page_intent.putExtra("ACC_TYPE", "STUDENT");
                 else
                     user_page_intent.putExtra("ACC_TYPE", "WARDEN");
+                final CheckBox checkBox = (CheckBox) findViewById(R.id.rememberMe);
+                if (checkBox.isChecked()) {
+                    SharedPreferences settings = getSharedPreferences("MY_PREFS_NAME", MODE_PRIVATE);
+                    SharedPreferences.Editor editor = settings.edit();
+                    editor.clear();
+                    editor.putString("Email", mEmailView.getText().toString());
+                    editor.putString("Password", mPasswordView.getText().toString());
+                    editor.commit();
+                }
+
                 startActivity(user_page_intent);
                 finish();
             } else {
