@@ -2,6 +2,7 @@ package vvv.gatepass;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
+import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.LoaderManager.LoaderCallbacks;
 import android.content.CursorLoader;
@@ -347,6 +348,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             return false;
         }
 
+        @SuppressLint("CommitPrefEdits")
         @Override
         protected void onPostExecute(final Boolean success) {
             mAuthTask = null;
