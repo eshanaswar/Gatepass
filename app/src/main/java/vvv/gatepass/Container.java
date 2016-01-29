@@ -13,19 +13,19 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.SubMenu;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
-public class UserPage extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+import vvv.gatepass.dummy.DummyContent;
+
+public class Container extends AppCompatActivity
+        implements NavigationView.OnNavigationItemSelectedListener, GatepassFragment.OnGatepassListFragmentInteractionListener {
 
     MenuItem mPreviousMenuItem;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -40,7 +40,7 @@ public class UserPage extends AppCompatActivity
             else {
                 acc_type = extras.getString("ACC_TYPE");
             }
-            UserProfile firstFragment = new UserProfile();
+            GatepassFragment firstFragment = new GatepassFragment();
 //          firstFragment.setArguments(getIntent().getExtras());
             getSupportFragmentManager().beginTransaction()
                     .add(R.id.contentFragment, firstFragment).commit();
@@ -82,7 +82,7 @@ public class UserPage extends AppCompatActivity
         Menu menu = navigationView.getMenu();
         menu.clear();
 
-        String [] menu_list = {"If you see this", "report bug"};
+        String [] menu_list;
         if (acc_type.equals("STUDENT")) {
             menu_list = new String[] {  "User Profile", "Out Station Request", "Non returnable Gatepass",
                                         "Check Gatepass Status", "Visitor's Gatepass", "Visitor's Gatepass Status"};
@@ -121,7 +121,7 @@ public class UserPage extends AppCompatActivity
                     .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
 
                         public void onClick(DialogInterface arg0, int arg1) {
-                            UserPage.super.onBackPressed();
+                            Container.super.onBackPressed();
                         }
                     }).create().show();
         }
@@ -160,7 +160,7 @@ public class UserPage extends AppCompatActivity
         int id = item.getItemId();
         Fragment fragment = null;
         Class fragmentClass;
-            fragmentClass = UserProfile.class;
+            fragmentClass = GatepassFragment.class;
 
         try {
             fragment = (Fragment) fragmentClass.newInstance();
@@ -185,13 +185,8 @@ public class UserPage extends AppCompatActivity
         super.onSaveInstanceState(outState);
     }
 
-
-    public static class UserProfile extends Fragment {
-        @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                                 Bundle savedInstanceState) {
-            return inflater.inflate(R.layout.fragment_user_profile,
-                    container, false);
-        }
+    @Override
+    public void onGatepassListFragmentInteraction(DummyContent.DummyItem item) {
+        Toast.makeText(this, item.toString(), Toast.LENGTH_SHORT).show();
     }
 }

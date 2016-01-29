@@ -24,7 +24,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".UserPage"
+            android:name=".Container"
             android:label="@string/title_activity_user_page"
             android:theme="@style/AppTheme.NoActionBar" />
     </application>
