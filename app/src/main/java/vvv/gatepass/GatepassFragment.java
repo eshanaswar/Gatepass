@@ -4,7 +4,6 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -25,10 +24,6 @@ import vvv.gatepass.dummy.DummyContent.DummyItem;
  */
 public class GatepassFragment extends Fragment {
 
-    // TODO: Customize parameter argument names
-    private static final String ARG_COLUMN_COUNT = "column-count";
-    // TODO: Customize parameters
-    private int mColumnCount = 1;
     private OnGatepassListFragmentInteractionListener mListener;
     private SwipeRefreshLayout swipeContainer;
 
@@ -40,23 +35,9 @@ public class GatepassFragment extends Fragment {
     public GatepassFragment() {
     }
 
-    // TODO: Customize parameter initialization
-    @SuppressWarnings("unused")
-    public static GatepassFragment newInstance(int columnCount) {
-        GatepassFragment fragment = new GatepassFragment();
-        Bundle args = new Bundle();
-        args.putInt(ARG_COLUMN_COUNT, columnCount);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        if (getArguments() != null) {
-            mColumnCount = getArguments().getInt(ARG_COLUMN_COUNT);
-        }
     }
 
     @Override
@@ -92,11 +73,7 @@ public class GatepassFragment extends Fragment {
         if (view.findViewById(R.id.list) instanceof RecyclerView) {
             Context context = view.findViewById(R.id.list).getContext();
             final RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.list);
-            if (mColumnCount <= 1) {
-                recyclerView.setLayoutManager(new LinearLayoutManager(context));
-            } else {
-                recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
-            }
+            recyclerView.setLayoutManager(new LinearLayoutManager(context));
             recyclerView.setAdapter(new MyGatepassRecyclerViewAdapter(DummyContent.ITEMS, mListener));
         }
         return view;
