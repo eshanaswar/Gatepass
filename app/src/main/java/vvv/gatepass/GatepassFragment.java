@@ -3,12 +3,16 @@ package vvv.gatepass;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import java.util.Timer;
+import java.util.TimerTask;
 
 import vvv.gatepass.dummy.DummyContent;
 import vvv.gatepass.dummy.DummyContent.DummyItem;
@@ -26,6 +30,8 @@ public class GatepassFragment extends Fragment {
     // TODO: Customize parameters
     private int mColumnCount = 1;
     private OnGatepassListFragmentInteractionListener mListener;
+    private SwipeRefreshLayout swipeContainer;
+
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -57,11 +63,34 @@ public class GatepassFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_gatepass_list, container, false);
+        swipeContainer = (SwipeRefreshLayout) view.findViewById(R.id.swipeContainer);
+        swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                //Placeholder
+                Timer timer = new Timer();
+                timer.schedule(new TimerTask() {
+                    @Override
+                    public void run() {
+                        getActivity().runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                swipeContainer.setRefreshing(false);
+                            }
+                        });
+                    }
+                }, 2000);
+            }
+        });
+        swipeContainer.setColorSchemeResources(android.R.color.holo_blue_bright,
+                android.R.color.holo_green_light,
+                android.R.color.holo_orange_light,
+                android.R.color.holo_red_light);
 
         // Set the adapter
-        if (view instanceof RecyclerView) {
-            Context context = view.getContext();
-            RecyclerView recyclerView = (RecyclerView) view;
+        if (view.findViewById(R.id.list) instanceof RecyclerView) {
+            Context context = view.findViewById(R.id.list).getContext();
+            final RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.list);
             if (mColumnCount <= 1) {
                 recyclerView.setLayoutManager(new LinearLayoutManager(context));
             } else {
