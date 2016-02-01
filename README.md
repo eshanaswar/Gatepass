@@ -6,4 +6,5 @@ Gatepass system app is made using Java, as a easier way to access a certain univ
 Contributors:
 
 [vVv-AA](https://github.com/vVv-AA)
+
 [CodeRedCorona](https://github.com/CodeRedCorona)
